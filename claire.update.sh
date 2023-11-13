@@ -13,7 +13,8 @@ ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
 bash -c "rm -R /opt/claire/claire.menu/"
-bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1"
+bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu"
+find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 
 # mkdir claire.temp
 # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp

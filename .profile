@@ -1,1 +1,1 @@
-dockernet=$(hostname)
+dockernet=waystid

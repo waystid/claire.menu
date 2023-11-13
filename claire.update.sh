@@ -16,7 +16,8 @@ ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
 sudo bash -c "rm -R /opt/claire/claire.menu/"
-sudo bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu"
+sudo bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
+rsync -av --progress "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
 
 # mkdir claire.temp
 # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp

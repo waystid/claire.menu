@@ -352,12 +352,12 @@ update_upgrade () {
 }
 
 ##### Run the script #####
-while pgrep -x apt > /dev/null; do
+while pgrep -x 'apt-get' > /dev/null; do
     echo "Apt is still running. Please wait..."
     sleep 1
 done
-
 echo "Updates finished. Ready to continue."
+
 install_gum
 
 gum spin --spinner dot --title "Installing essential apps" -- install_essential_apps

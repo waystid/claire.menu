@@ -351,15 +351,15 @@ update_upgrade () {
 ##### Run the script #####
 install_gum
 
-install_essential_apps
-install_qemu_guest_agent
-claire.mount_config
-claire.mount_data
+gum spin --spinner dot --title "Installing essential apps" -- install_essential_apps
+gum spin --spinner dot --title "Installing QEMU Guest Agent" -- install_qemu_guest_agent
+gum spin --spinner dot --title "claire.mount /config" -- claire.mount_config
+gum spin --spinner dot --title "claire.mount /data" -- claire.mount_data
 checklist
-claire.install
-install_docker
-create_docker_network
-install_docker_compose
-install_node
+gum spin --spinner dot --show-output --title "claire.menu Install" -- claire.install
+gum spin --spinner dot --title "Installing Docker" -- install_docker
+gum spin --spinner dot --title "Creating Docker Network" -- create_docker_network
+gum spin --spinner dot --title "Installing Docker Compose" -- install_docker_compose
+gum spin --spinner dot --title "Installing Node" -- install_node
 update_upgrade
 reboot

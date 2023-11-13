@@ -7,14 +7,16 @@
 # Another fine product brought to you by Claire™
 ######################################################################
 
+# Set hostname variable
+name=$(hostname)
+
 #Set folders
 ifolder="/opt/ibracorp/ibramenu"
 ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
-bash -c "rm -R /opt/claire/claire.menu/"
-bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu"
-find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+sudo bash -c "rm -R /opt/claire/claire.menu/"
+sudo bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu"
 
 # mkdir claire.temp
 # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
@@ -24,17 +26,17 @@ find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 # rmdir claire.temp
 
 #Change permissions
-find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+sudo find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 
 #Update ibramenu
-bash -c "rm -R /opt/ibracorp/ibramenu/"
-bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
+sudo bash -c "rm -R /opt/ibracorp/ibramenu/"
+sudo bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
 find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
 
 # update the custom docker network use in all the containers
 update_docker_network() {
-  sed -i "s/^dockernet=.*$/dockernet=$customnetwork/" /opt/claire/claire.menu/.profile
-  docker network create $customnetwork >/dev/null 2>&1
+  sed -i "s/^dockernet=.*$/dockernet=$name/" /opt/claire/claire.menu/.profile
+  docker network create $name >/dev/null 2>&1
 }
 
 update_docker_network

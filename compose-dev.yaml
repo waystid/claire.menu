@@ -1,0 +1,16 @@
+# This is a example Docker Compose file for the claire.menu service.
+# It defines the configuration to build and run the claire.menu container.
+---
+services:
+  claire.menu:
+    build:
+      context: . # The dot "." means the current directory will be used as the build context
+      dockerfile: Dockerfile-dev
+    container_name: claire-dev
+    environment:
+      - TZ=Etc/EST
+    volumes:
+      - /config:/opt/appdata
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/opt/claire/claire.menu
+    restart: unless-stopped

@@ -3,6 +3,17 @@
 # Set hostname variable
 name=$(hostname)
 
+install_gum() {
+    # Install Gum
+    display_menu_header
+    if ! command -v gum &> /dev/null; then
+        # Install Gum
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
+        apt update && apt-get install gum -y
+    fi
+}
 # Function to display menu header
 display_menu_header() {
   tput clear
@@ -29,8 +40,11 @@ install_essential_apps() {
       sleep 1
     done
 
+    #Install Gum
     apt update && apt upgrade -y
+    install_gum
 
+    #Install Essential Apps
     apps=("nano" "rsync" "curl" "gpg" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
     
     for app in "${apps[@]}"; do
@@ -247,15 +261,15 @@ claire.install() {
     mkdir -p $ifolder1
 
     # Clone claire.menu
-    #git clone -b main --single-branch https://github.com/waystid/claire.git /opt
-    # find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
-    
-    mkdir claire.temp
-    mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
-    rsync -av --progress "claire.temp/claire.menu/" "/opt/claire/claire.menu/"
+    git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1
     find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
-    umount claire.temp
-    rmdir claire.temp
+    
+    # mkdir claire.temp
+    # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
+    # rsync -av --progress "claire.temp/claire.menu/" "/opt/claire/claire.menu/"
+    # find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+    # umount claire.temp
+    # rmdir claire.temp
 
     #Install Ibra ( i )
 
@@ -341,23 +355,13 @@ update_upgrade () {
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
+  rm -r /opt/claire/claire.menu/claire.install
 }
 
 ##### Run the script #####
 
 install_essential_apps
 install_qemu_guest_agent
-
-# Install Gum
-display_menu_header
-if ! command -v gum &> /dev/null; then
-  # Install Gum
-  mkdir -p /etc/apt/keyrings
-  curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-  echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
-  apt update && apt-get install gum -y
-fi
-
 claire.mount_config
 claire.mount_data
 checklist

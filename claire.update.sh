@@ -7,6 +7,10 @@
 # Another fine product brought to you by Claire™
 ######################################################################
 
+#Set folders
+ifolder="/opt/ibracorp/ibramenu"
+ifolder1="/opt/claire/claire.menu"
+
 #Update claire.menu
 bash -c "rm -R /opt/claire/claire.menu/"
 bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1"

@@ -15,9 +15,10 @@ ifolder="/opt/ibracorp/ibramenu"
 ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
-sudo bash -c "rm -R /opt/claire/claire.menu/"
-sudo bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
-rsync -av --progress "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
+bash -c "rm -R /opt/claire/claire.menu/"
+gum spin --spinner dot --title "Updating claire.menu" -- bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
+gum spin --spinner dot --title "Updating claire.menu" -- rsync -av "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
+rm -r /opt/claire/claire.menu2
 
 # mkdir claire.temp
 # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
@@ -27,11 +28,11 @@ rsync -av --progress "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
 # rmdir claire.temp
 
 #Change permissions
-sudo find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 
 #Update ibramenu
-sudo bash -c "rm -R /opt/ibracorp/ibramenu/"
-sudo bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
+bash -c "rm -R /opt/ibracorp/ibramenu/"
+bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
 find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
 
 # update the custom docker network use in all the containers

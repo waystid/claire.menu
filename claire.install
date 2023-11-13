@@ -3,17 +3,7 @@
 # Set hostname variable
 name=$(hostname)
 
-install_gum() {
-    # Install Gum
-    display_menu_header
-    if ! command -v gum &> /dev/null; then
-        # Install Gum
-        mkdir -p /etc/apt/keyrings
-        curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
-        apt update && apt upgrade -y && apt-get install gum -y
-    fi
-}
+
 # Function to display menu header
 display_menu_header() {
   tput clear
@@ -31,11 +21,24 @@ claire.installer - Installer for claire.menu
 EOF
   tput sgr0     
 }
+# Function to install Gum
+install_gum() {
+    # Install Gum
+    display_menu_header
+    if ! command -v gum &> /dev/null; then
+        # Install Gum
+        apt-get install -y curl gpg
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
+        apt update && apt upgrade -y && apt-get install gum -y
+    fi
+}
 
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    apps=("nano" "rsync" "curl" "gpg" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
+    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then
@@ -349,6 +352,12 @@ update_upgrade () {
 }
 
 ##### Run the script #####
+while pgrep -x apt > /dev/null; do
+    echo "Apt is still running. Please wait..."
+    sleep 1
+done
+
+echo "Updates finished. Ready to continue."
 install_gum
 
 gum spin --spinner dot --title "Installing essential apps" -- install_essential_apps

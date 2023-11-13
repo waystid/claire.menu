@@ -11,7 +11,7 @@ install_gum() {
         mkdir -p /etc/apt/keyrings
         curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
         echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
-        apt update && apt-get install gum -y
+        apt update && apt upgrade -y && apt-get install gum -y
     fi
 }
 # Function to display menu header
@@ -35,16 +35,6 @@ EOF
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    while pgrep -x apt > /dev/null; do
-      echo "Apt is still running. Please wait..."
-      sleep 1
-    done
-
-    #Install Gum
-    apt update && apt upgrade -y
-    install_gum
-
-    #Install Essential Apps
     apps=("nano" "rsync" "curl" "gpg" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
     
     for app in "${apps[@]}"; do
@@ -359,6 +349,7 @@ update_upgrade () {
 }
 
 ##### Run the script #####
+install_gum
 
 install_essential_apps
 install_qemu_guest_agent

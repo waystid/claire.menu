@@ -3,7 +3,6 @@
 # Set hostname variable
 name=$(hostname)
 
-
 # Function to display menu header
 display_menu_header() {
   tput clear
@@ -42,23 +41,15 @@ install_essential_apps() {
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then
-            echo "Installing $app..."
-            if apt-get install -y "$app"; then
-                echo "$app installed successfully."
-            else
-                echo "Error: Failed to install $app. Exiting."
-                exit 1
-            fi
-        else
-            echo "$app is already installed."
+            gum spin --spinner dot --title "Installing $app" -- apt-get install -y "$app"
         fi
     done
-    gem install mdless
+    gum spin --spinner dot --title "Installing mdless" -- gem install mdless
     # Pip psutil
-    apt-get install gcc python3-dev
-    pip install --no-binary :all: psutil
+    gum spin --spinner dot --title "Installing python3-dev" -- apt-get install gcc python3-dev
+    gum spin --spinner dot --title "Installing psutil" -- pip install --no-binary :all: psutil
      # Google Download
-    pip3 install gdown
+    gum spin --spinner dot --title "Installing gdown" -- pip3 install gdown
 }
 
 # Function to install and enable qemu-guest-agent
@@ -67,8 +58,8 @@ install_qemu_guest_agent() {
         # Check if qemu-guest-agent is installed
         if ! command -v qemu-ga &> /dev/null; then
             echo "QEMU guest agent is not installed. Installing..."
-            apt-get update
-            apt-get install qemu-guest-agent
+            gum spin --spinner dot --title "Updating" -- apt-get update
+            gum spin --spinner dot --title "Installing QEMU guest agent" -- apt-get install qemu-guest-agent
         else
             echo "QEMU guest agent is already installed."
         fi
@@ -76,8 +67,8 @@ install_qemu_guest_agent() {
         # Check if qemu-guest-agent is enabled
         if ! systemctl is-enabled qemu-guest-agent &> /dev/null; then
             echo "QEMU guest agent is not enabled. Enabling..."
-            systemctl enable qemu-guest-agent
-            systemctl start qemu-guest-agent
+            gum spin --spinner dot --title "Enabling QEMU guest agent" -- systemctl enable qemu-guest-agent
+            gum spin --spinner dot --title "Starting QEMU guest agent" -- systemctl start qemu-guest-agent
         else
             echo "QEMU guest agent is already enabled and running."
         fi
@@ -106,7 +97,7 @@ claire.mount_config() {
         
         # Check if nfs-common is installed
         if ! command -v nfsstat &> /dev/null; then
-          apt-get install -y nfs-common
+          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install -y nfs-common
         fi
 
         msgbox "claire.mount /config"
@@ -148,7 +139,7 @@ claire.mount_data() {
     display_menu_header
     # Check if cifs-utils is installed
     if ! command -v mount.cifs &> /dev/null; then
-      apt-get install -y cifs-utils
+      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install -y cifs-utils
     fi
 
     # Display mount options
@@ -157,7 +148,7 @@ claire.mount_data() {
     # Storage Credentials
     mkdir claire.temp
     mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
-    rsync -av --progress "claire.temp/storage_credentials" "/root/.storage_credentials"
+    gum spin --spinner dot --title "Saving Storage Credentials" -- rsync -av --progress "claire.temp/storage_credentials" "/root/.storage_credentials"
     umount claire.temp
     rmdir claire.temp
 
@@ -309,14 +300,14 @@ claire.install() {
 }
 
 install_docker () {
-  sudo apt-get remove docker docker-engine docker.io containerd runc
-  sudo apt-get update
-  sudo apt-get install ca-certificates curl gnupg lsb-release
-  sudo rm /usr/share/keyrings/docker-archive-keyring.gpg
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker docker-engine docker.io containerd runc
+  gum spin --spinner dot --title "Installing Docker" -- apt-get update
+  gum spin --spinner dot --title "Installing Docker" -- apt-get install ca-certificates curl gnupg lsb-release
+  gum spin --spinner dot --title "Installing Docker" -- rm /usr/share/keyrings/docker-archive-keyring.gpg
+  gum spin --spinner dot --title "Installing Docker" -- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  sudo apt-get update
-  sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+  gum spin --spinner dot --title "Installing Docker" -- apt-get update
+  gum spin --spinner dot --title "Installing Docker" -- apt-get install docker-ce docker-ce-cli containerd.io -y
   sudo groupadd docker
   sudo usermod -aG docker $USER 
 }
@@ -329,19 +320,19 @@ create_docker_network () {
 
 install_docker_compose () {
    mkdir -p ~/.docker/cli-plugins/
-   curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+   gum spin --spinner dot --title "Installing Docker Compose" -- curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
    chmod +x ~/.docker/cli-plugins/docker-compose
    ## install compose switch - https://docs.docker.com/compose/cli-command/#compose-switch
-   curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh 
+   gum spin --spinner dot --title "Installing Docker Compose" -- curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh 
    docker compose version
 }
 
 install_node() {
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+  gum spin --spinner dot --title "Installing Node" -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-  nvm install node
+  gum spin --spinner dot --title "Installing Node" -- nvm install node
 }
 
 update_upgrade () {
@@ -353,22 +344,21 @@ update_upgrade () {
 
 ##### Run the script #####
 while pgrep -x 'apt-get' > /dev/null; do
-    echo "Apt is still running. Please wait..."
-    sleep 1
+    echo "Updates are still running. Please wait..."
+    sleep 10
 done
 echo "Updates finished. Ready to continue."
 
 install_gum
-
-gum spin --spinner dot --title "Installing essential apps" -- install_essential_apps
-gum spin --spinner dot --title "Installing QEMU Guest Agent" -- install_qemu_guest_agent
-gum spin --spinner dot --title "claire.mount /config" -- claire.mount_config
-gum spin --spinner dot --title "claire.mount /data" -- claire.mount_data
+install_essential_apps
+install_qemu_guest_agent
+claire.mount_config
+claire.mount_data
 checklist
-gum spin --spinner dot --show-output --title "claire.menu Install" -- claire.install
-gum spin --spinner dot --title "Installing Docker" -- install_docker
-gum spin --spinner dot --title "Creating Docker Network" -- create_docker_network
-gum spin --spinner dot --title "Installing Docker Compose" -- install_docker_compose
-gum spin --spinner dot --title "Installing Node" -- install_node
+claire.install
+install_docker
+create_docker_network
+install_docker_compose
+install_node
 update_upgrade
 reboot

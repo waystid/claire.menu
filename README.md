@@ -5,7 +5,7 @@ Command line tool for setting up new virtual machines
 ### As root user
 
 ```bash
-wget -qO ./i https://raw.githubusercontent.com/waystid/claire.menu/31a0f3a5882a47581d557f197b66e472f97cb256/claire.install &&\ 
+wget -qO ./i https://raw.githubusercontent.com/waystid/claire.menu/main/claire.install &&\ 
 chmod +x i &&\ 
 ./i
 ```
@@ -13,7 +13,7 @@ chmod +x i &&\
 ### As non root user
 
 ``` bash
-sudo wget -qO ./i wget -qO ./i https://raw.githubusercontent.com/waystid/claire.menu/31a0f3a5882a47581d557f197b66e472f97cb256/claire.install &&\ 
+sudo wget -qO ./i wget -qO ./i https://raw.githubusercontent.com/waystid/claire.menu/main/claire.install &&\ 
 sudo chmod +x i &&\ 
 sudo ./i
 ```

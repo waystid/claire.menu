@@ -339,7 +339,7 @@ update_upgrade () {
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
-  rm -r /opt/claire/claire.menu/claire.install /opt/claire.menu ~/i
+  rm -r /opt/claire/claire.menu/claire.install
 }
 
 ##### Run the script #####

@@ -339,7 +339,7 @@ update_upgrade () {
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
-  rm -r /opt/claire/claire.menu/claire.install
+  apt update && apt upgrade -y
 }
 
 ##### Run the script #####
@@ -356,8 +356,8 @@ claire.mount_config
 claire.mount_data
 checklist
 claire.install
+install_node
 install_docker
 create_docker_network
 install_docker_compose
-install_node
 update_upgrade

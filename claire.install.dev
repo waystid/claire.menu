@@ -125,7 +125,7 @@ claire.mount_config() {
         mount -t nfs 192.168.1.18:/mnt/ssd/resources/config claire.temp
 
         # Create and mount config folder
-        mkdir -p claire.temp/dev$name
+        mkdir -p claire.temp/dev/$name
         echo "192.168.1.18:/mnt/ssd/resources/config/dev/$name /config nfs4 defaults 0 0" | tee -a /etc/fstab
         mount /config
 
@@ -427,7 +427,7 @@ update_upgrade() {
     "./Dozzle.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
-  msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
+  msgbox "Total data size added to the machine: $totalDataSize bytes. Please remember to reboot if the process did major Upgrades like the Kernel"
 }
 
 ##### Run the script #####
@@ -449,34 +449,3 @@ install_docker
 create_docker_network
 install_docker_compose
 update_upgrade
-
-
-
-
-
-# ... your existing code ...
-
-# Example usage:
-# Download a file using curl
-curl -LO https://example.com/file.txt
-# Update the total data size
-updateDataSize "file.txt"
-
-# ... more code ...
-
-# Download a file using git
-git clone https://github.com/user/repo.git
-# Update the total data size
-updateDataSize "repo"
-
-# ... more code ...
-
-# Install a package using apt-get
-apt-get install package-name
-# Update the total data size
-updateDataSize "package-name"
-
-# ... more code ...
-
-# Display the total data size
-echo "Total data size added to the machine: $totalDataSize bytes"

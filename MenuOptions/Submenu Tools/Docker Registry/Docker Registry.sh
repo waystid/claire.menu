@@ -22,4 +22,4 @@ extrapayload=""                                 # Extra Payload to add to the Co
 
 # Execute
 app
-
+echo '{"insecure-registries":["192.168.1.10:5000"]}' >> /etc/docker/daemon.json

@@ -161,7 +161,7 @@ EOF
   chmod +x /etc/update-motd.d/01-claire
 }
 
-local.docker(){
+local.docker() {
   # Install jq
   if ! command -v jq &> /dev/null; then
     sudo apt-get update

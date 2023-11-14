@@ -279,7 +279,15 @@ appfinalization() {
 
 # App Complete
 app() {
-  local.docker
+  # Local Docker
+  if [ "$app" != "registry" ]; then
+    # Execute local.docker function here
+    local.docker
+  else
+    echo "Skipping local.docker function because app is set to 'registry'"
+  fi
+
+  # Execute appcreate function
   appgreetings
   appcreate
   appfinalization

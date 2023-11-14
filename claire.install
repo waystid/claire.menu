@@ -335,10 +335,10 @@ install_node() {
   gum spin --spinner dot --title "Installing Node" -- nvm install node
 }
 
-update_upgrade () {
+update_upgrade() {
   cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
     "./All Steps in One.sh"
-  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle"
     "./Dozzle.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"

@@ -336,10 +336,14 @@ install_node() {
 }
 
 update_upgrade () {
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
+    "./All Steps in One.sh"
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle
+    "./Dozzle.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
-  apt update && apt upgrade -y
+  reboot
 }
 
 ##### Run the script #####

@@ -284,6 +284,7 @@ app() {
   # Local Docker
   if [ "$app" != "registry" ]; then
     # Execute local.docker function here
+    echo "${image_name}" >> /opt/claire/claire.menu/update/docker.txt
     local.docker
   else
     echo "Skipping local.docker function because app is set to 'registry'"

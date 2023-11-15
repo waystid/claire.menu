@@ -12,7 +12,7 @@ source /opt/claire/claire.menu/claire.func.sh
 # App Info
 app="sonarr"                                   # App Name
 title="Sonarr"                                 # Readable App Title
-image="lscr.io/linuxserver/sonarr:latest"      # Image and Tag
+image="lscr.io/linuxserver/sonarr:develop"      # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
       - /data:/media"                     # Volumes

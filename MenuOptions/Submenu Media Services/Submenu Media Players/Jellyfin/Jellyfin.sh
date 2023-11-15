@@ -66,6 +66,6 @@ local_appfinalization () {
 }
 
 # Execute
-
+local.docker
 local_appcreate
 local_appfinalization

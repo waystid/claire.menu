@@ -283,10 +283,17 @@ appfinalization() {
 app() {
   # Local Docker
   if [ "$app" != "registry" ]; then
+    #Update image file
+    update_image_file="/data/resources/claire/update_images"
+    
+    # Check if the line is already in the file
+    if ! grep -qF "$image" "$update_image_file"; then
+      sudo chmod u+w $update_image_file
+      echo "${image}" >> $update_image_file
+    else
+      echo "Line already exists in $update_image_file"
+    fi
     # Execute local.docker function here
-    sudo chmod u+w /data/resources/claire/update_images.txt
-    echo "${image}" >> /data/resources/claire/update_images.txt
-    # echo "${image_name}" | tee -a /data/resources/claire/update_images.txt
     local.docker
   else
     echo "Skipping local.docker function because app is set to 'registry'"

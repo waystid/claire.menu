@@ -168,30 +168,32 @@ local.docker{
     sudo apt-get install jq
   fi
 
-  # Set local registry address
-  registry_url="http://192.168.1.10:5000"
+  image_tag=$(echo $image | awk -F':' '{print $NF}')
+  registry_url="192.168.1.10:5000/claire/"
 
   # Check if the image_name contains the local registry address
   if [[ "${image}" == *"${registry_url}"* ]]; then
     echo "Image ${image} is already in the local registry."
   else
-  
-    # Extract the image tag using docker inspect
-    image_tag=$(docker inspect --format='{{index .RepoDigests 0}}' ${image} | awk -F: '{print $NF}')
-
     # Check if the image exists in the local registry
     if curl -s "${registry_url}v2/${app}/tags/list" | jq -e '.tags' > /dev/null; then
       echo "Image ${image} already exists in the local registry with tag ${image_tag}."
       image="${registry_url}${app}:${image_tag}"
     else
-      # If the image doesn't exist, pull it from the registry and push it to the local registry
-      docker pull "${image}"
-      docker tag "${app}" "${registry_url}${app}:${image_tag}"
-      docker push "${registry_url}${app}:${image_tag}"
-      image="${registry_url}${app}:${image_tag}"
-      echo "Image ${image} pulled from the registry and pushed to the local registry with tag ${image_tag}."
+    # If the image doesn't exist, pull it from the registry and push it to the local registry
+    # Pull the original image
+    docker pull $image
+
+    # Tag the image for the local registry
+    docker tag $image "${registry_url}${app}:${image_tag}"
+
+    # Push the image to the local registry
+    docker push "${registry_url}${app}:${image_tag}"
+
+    # Set the new image variable
+    image="${registry_url}${app}:${image_tag}"
+    fi
   fi
-fi
 }
 
 # App Greetings

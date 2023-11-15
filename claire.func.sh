@@ -284,7 +284,9 @@ app() {
   # Local Docker
   if [ "$app" != "registry" ]; then
     # Execute local.docker function here
-    echo "${image_name}" | tee -a /data/resources/claire/update_images.txt
+    sudo chmod u+w /data/resources/claire/update_images.txt
+    echo "${image}" >> /data/resources/claire/update_images.txt
+    # echo "${image_name}" | tee -a /data/resources/claire/update_images.txt
     local.docker
   else
     echo "Skipping local.docker function because app is set to 'registry'"

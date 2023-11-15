@@ -10,7 +10,7 @@
 source /opt/claire/claire.menu/claire.func.sh
 
 # App Info
-app="whiasparr"                                # App Name
+app="whisparr"                                # App Name
 title="Whisparr"                               # Readable App Title
 image="cr.hotio.dev/hotio/whisparr:nightly"    # Image and Tag
 volumes="    volumes:

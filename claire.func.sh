@@ -289,7 +289,7 @@ app() {
     # Check if the line is already in the file
     if ! grep -qF "$image" "$update_image_file"; then
       sudo chmod u+w $update_image_file
-      echo "${image}" >> $update_image_file
+      echo "${image} | ${app}:${image_tag}" >> $update_image_file
     else
       echo "Line already exists in $update_image_file"
     fi

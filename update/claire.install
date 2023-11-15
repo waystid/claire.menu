@@ -1,0 +1,367 @@
+#!/bin/bash
+
+# Set hostname variable
+name=$(hostname)
+
+# Function to display menu header
+display_menu_header() {
+  tput clear
+  
+  tput bold
+  tput setaf 1
+  tee <<-EOF
+        _       _                                       
+    ___| | __ _(_)_ __ ___   _ __ ___   ___ _ __  _   _  ™
+   / __| |/ _\` | | '__/ _ \ | '_ \` _ \ / _ \ '_ \| | | 
+  | (__| | (_| | | | |  __/_| | | | | |  __/ | | | |_| |
+   \___|_|\__,_|_|_|  \___(_)_| |_| |_|\___|_| |_|\__,_|
+
+claire.installer - Installer for claire.menu
+EOF
+  tput sgr0     
+}
+# Function to install Gum
+install_gum() {
+    # Install Gum
+    display_menu_header
+    if ! command -v gum &> /dev/null; then
+        # Install Gum
+        apt-get install -y curl gpg
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
+        apt update && apt upgrade -y && apt-get install gum -y
+    fi
+}
+
+# Function to install essential apps
+install_essential_apps() {
+    display_menu_header
+    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
+    
+    for app in "${apps[@]}"; do
+        if ! command -v "$app" > /dev/null 2>&1; then
+            gum spin --spinner dot --title "Installing $app" -- apt-get install -y "$app"
+        fi
+    done
+    gum spin --spinner dot --title "Installing mdless" -- gem install mdless
+    # Pip psutil
+    gum spin --spinner dot --title "Installing python3-dev" -- apt-get install gcc python3-dev
+    gum spin --spinner dot --title "Installing psutil" -- pip install --no-binary :all: psutil
+     # Google Download
+    gum spin --spinner dot --title "Installing gdown" -- pip3 install gdown
+}
+
+# Function to install and enable qemu-guest-agent
+install_qemu_guest_agent() {
+        display_menu_header
+        # Check if qemu-guest-agent is installed
+        if ! command -v qemu-ga &> /dev/null; then
+            echo "QEMU guest agent is not installed. Installing..."
+            gum spin --spinner dot --title "Updating" -- apt-get update
+            gum spin --spinner dot --title "Installing QEMU guest agent" -- apt-get install qemu-guest-agent
+        else
+            echo "QEMU guest agent is already installed."
+        fi
+
+        # Check if qemu-guest-agent is enabled
+        if ! systemctl is-enabled qemu-guest-agent &> /dev/null; then
+            echo "QEMU guest agent is not enabled. Enabling..."
+            gum spin --spinner dot --title "Enabling QEMU guest agent" -- systemctl enable qemu-guest-agent
+            gum spin --spinner dot --title "Starting QEMU guest agent" -- systemctl start qemu-guest-agent
+        else
+            echo "QEMU guest agent is already enabled and running."
+        fi
+
+        echo "QEMU guest agent check complete."
+}
+
+# Function to check if the IP is in the specified range
+check_ip_range() {
+    ip_address=$(hostname -I | cut -d' ' -f1)
+    IFS=. read -r i1 i2 i3 i4 <<< "$ip_address"
+    if [ "$i1" -eq 192 ] && [ "$i2" -eq 168 ] && [ "$i3" -eq 1 ] && [ "$i4" -ge 10 ] && [ "$i4" -le 30 ]; then
+        return 0  # IP is in the range
+    else
+        return 1  # IP is not in the range
+    fi
+}
+
+# Claire Mount
+claire.mount_config() {
+    display_menu_header
+
+    # Check if the IP is in the specified range
+    check_ip_range
+    if [ $? -eq 0 ]; then
+        
+        # Check if nfs-common is installed
+        if ! command -v nfsstat &> /dev/null; then
+          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install -y nfs-common
+        fi
+
+        msgbox "claire.mount /config"
+        # Create Working Directories
+        mkdir -p /config claire.temp
+
+        # Mount Temp Directory
+        mount -t nfs 192.168.1.18:/mnt/ssd/resources/config/docker claire.temp
+
+        # Create and mount config folder
+        mkdir -p claire.temp/$name
+        echo "192.168.1.18:/mnt/ssd/resources/config/docker/$name /config nfs4 defaults 0 0" | tee -a /etc/fstab
+        mount /config
+
+        # Other Mounts
+        # echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0"  | tee -a /etc/fstab
+        # echo "192.168.1.18:/mnt/nimbus/configs /mnt/config/nimbus nfs4 defaults 0 0" | tee -a /etc/fstab
+        # echo "192.168.1.18:/mnt/ssd/config /mnt/config/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
+
+        # echo "192.168.1.55:/volume1/docker-pve /mnt/config/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
+
+        #media
+        # echo "//192.168.1.18/nimbus/data /mnt/media cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+        # echo "//192.168.1.18/nimbus /mnt/full cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+
+        # Unmount temp folder and create symlinks
+        umount claire.temp
+        rmdir claire.temp
+        mkdir -p /config/portainer/apps
+        ln -s /config/portainer/apps/ /portainer
+        echo "Mount configured successfully."
+        
+    else
+        echo "Error: IP is not in the specified range."
+    fi
+}
+
+claire.mount_data() {
+    display_menu_header
+    # Check if cifs-utils is installed
+    if ! command -v mount.cifs &> /dev/null; then
+      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install -y cifs-utils
+    fi
+
+    # Display mount options
+    display_menu_header
+    
+    # Storage Credentials
+    mkdir claire.temp
+    mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
+    gum spin --spinner dot --title "Saving Storage Credentials" -- rsync -av --progress "claire.temp/storage_credentials" "/root/.storage_credentials"
+    umount claire.temp
+    rmdir claire.temp
+
+    # Create and mount /data directory
+    mkdir -p /data
+    echo "#media" | tee -a /etc/fstab
+    echo "//192.168.1.18/nimbus/data/media /data cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+    mount /data
+
+    stty echo
+    echo "Mount configured successfully."
+}
+
+# Checklist
+checklist () {
+  display_menu_header
+  tee <<-EOF
+
+Your System:
+
+CPU Threads: $(lscpu | grep "CPU(s):" | tail +1 | head -1 | awk  '{print $2}')
+IP: $(hostname -I | awk '{print $1}')
+RAM: $(free -m | grep Mem | awk 'NR=1 {print $2}') MB
+
+EOF
+
+  # Check linux distribution
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    dist=$NAME
+    release=$VERSION_ID
+  elif type lsb_release >/dev/null 2>&1; then
+    dist=$(lsb_release -si)
+    release=$(lsb_release -sr)
+  elif [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    dist=$DISTRIB_ID
+    release=$DISTRIB_RELEASE
+  elif [ -f /etc/debian_version ]; then
+    dist=Debian
+    release=$(cat /etc/debian_version)
+  else
+    dist=$(uname -s)
+    release=$(uname -r)
+  fi
+
+  distribution="$dist $release"
+  case $distribution in
+    "Ubuntu 18.04" | "Ubuntu 20.04" | "Ubuntu 22.04" | "Ubuntu 22.10")
+      echo "$distribution has been tested and works"
+      echo
+      sleep 3
+      ;;
+    "Debian GNU/Linux 10")
+      echo "$distribution is considered experimental but will mostly work"
+      echo "You will be asked if you want to switch the debian repositories from 'stable' to 'oldstable'. More info can be found here: https://wiki.debian.org/DebianOldStable"
+      read -p "Press Enter to continue"
+      ;;
+    "Debian GNU/Linux 11")
+      echo "$distribution is considered experimental but will mostly work"
+      read -p "Press Enter to continue"
+      ;;
+    *)
+      read -p "$distribution has not been tested, would you like to continue? (y/n) " accept
+      case "$accept" in
+        [yY])
+          ;;
+        *)
+          exit 0
+          ;;
+      esac
+      ;;
+  esac
+
+}
+
+#Install claire.menu
+claire.install() {
+    display_menu_header
+    msgbox "Claire.Menu" "This script will install claire.menu"
+    checklist
+    
+    #Link /opt to /config/code
+    mkdir -p /config/code
+    mv /opt/ /opt.local/
+    ln -s /config/code/ /opt
+
+    #Install Claire
+    # Check for existing claire.menu folder and clean up if needed
+    ifolder1="/opt/claire/claire.menu"
+    if [ -d $ifolder1 ]; then
+      rm -r $ifolder1
+    fi
+    mkdir -p $ifolder1
+
+    # Clone claire.menu
+    git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1
+    find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+    
+    # mkdir claire.temp
+    # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
+    # rsync -av --progress "claire.temp/claire.menu/" "/opt/claire/claire.menu/"
+    # find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+    # umount claire.temp
+    # rmdir claire.temp
+
+    #Install Ibra ( i )
+
+    # Check for existing ibramenu folder and clean up if needed
+    ifolder="/opt/ibracorp/ibramenu"
+    if [ -d $ifolder ]; then
+      rm -r $ifolder
+    fi
+    mkdir -p $ifolder
+
+    # Clone ibramenu
+    git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git $ifolder
+    find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
+
+
+    # Add claire as systemwide alias
+    if ! grep -q claire /etc/bash.bashrc
+    then
+      insert_alias="alias claire='sudo /opt/claire/claire.menu/claire.menu.sh'"
+      echo $insert_alias | sudo tee -a /etc/bash.bashrc > /dev/null
+      source /etc/bash.bashrc
+    fi
+    
+    # Add claire.update as systemwide alias
+    if ! grep -q claire.update /etc/bash.bashrc
+    then
+      insert_alias="alias claire.update='sudo /opt/claire/claire.menu/claire.update.sh'"
+      echo $insert_alias | sudo tee -a /etc/bash.bashrc > /dev/null
+      source /etc/bash.bashrc
+    fi
+
+    # Add ibramenu as systemwide alias
+    if ! grep -q ibramenu /etc/bash.bashrc
+    then
+      insert_alias="alias ibramenu='sudo /opt/ibracorp/ibramenu/ibramenu.sh'"
+      echo $insert_alias | sudo tee -a /etc/bash.bashrc > /dev/null
+      source /etc/bash.bashrc
+    fi
+
+    # Include claire.func for all the awesome functions
+    source /opt/claire/claire.menu/claire.func.sh
+    claire.motd
+    logo
+}
+
+install_docker () {
+  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker docker-engine docker.io containerd runc
+  gum spin --spinner dot --title "Installing Docker" -- apt-get update
+  gum spin --spinner dot --title "Installing Docker" -- apt-get install ca-certificates curl gnupg lsb-release
+  gum spin --spinner dot --title "Installing Docker" -- rm /usr/share/keyrings/docker-archive-keyring.gpg
+  gum spin --spinner dot --title "Installing Docker" -- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  gum spin --spinner dot --title "Installing Docker" -- apt-get update
+  gum spin --spinner dot --title "Installing Docker" -- apt-get install docker-ce docker-ce-cli containerd.io -y
+  sudo groupadd docker
+  sudo usermod -aG docker $USER 
+}
+
+create_docker_network () {
+  sed -i "s/^dockernet=.*$/dockernet=$name/" /opt/claire/claire.menu/.profile
+
+  docker network create $name > /dev/null 2>&1
+}
+
+install_docker_compose () {
+   mkdir -p ~/.docker/cli-plugins/
+   gum spin --spinner dot --title "Installing Docker Compose" -- curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+   chmod +x ~/.docker/cli-plugins/docker-compose
+   ## install compose switch - https://docs.docker.com/compose/cli-command/#compose-switch
+   gum spin --spinner dot --title "Installing Docker Compose" -- curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh 
+   docker compose version
+}
+
+install_node() {
+  gum spin --spinner dot --title "Installing Node" -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+  gum spin --spinner dot --title "Installing Node" -- nvm install node
+}
+
+update_upgrade() {
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
+    "./All Steps in One.sh"
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle"
+    "./Dozzle.sh"
+  msgbox "Type 'claire.menu' to launch claire.menu"
+  msgbox "Type 'claire.update' to update"
+  msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
+  reboot
+}
+
+##### Run the script #####
+while pgrep -x 'apt-get' > /dev/null; do
+    echo "Updates are still running. Please wait..."
+    sleep 10
+done
+echo "Updates finished. Ready to continue."
+
+install_gum
+install_essential_apps
+install_qemu_guest_agent
+claire.mount_config
+claire.mount_data
+checklist
+claire.install
+install_node
+install_docker
+create_docker_network
+install_docker_compose
+update_upgrade

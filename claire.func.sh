@@ -162,11 +162,6 @@ EOF
 }
 
 local.docker() {
-  # Install jq
-  if ! command -v jq &> /dev/null; then
-    sudo apt-get update
-    sudo apt-get install jq
-  fi
 
   image_tag=$(echo $image | awk -F':' '{print $NF}')
   registry_url="192.168.1.10:5000/claire/"

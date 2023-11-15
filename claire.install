@@ -37,7 +37,7 @@ install_gum() {
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
+    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "jq")
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then
@@ -45,11 +45,6 @@ install_essential_apps() {
         fi
     done
     gum spin --spinner dot --title "Installing mdless" -- gem install mdless
-    # Pip psutil
-    gum spin --spinner dot --title "Installing python3-dev" -- apt-get install gcc python3-dev
-    gum spin --spinner dot --title "Installing psutil" -- pip install --no-binary :all: psutil
-     # Google Download
-    gum spin --spinner dot --title "Installing gdown" -- pip3 install gdown
 }
 
 # Function to install and enable qemu-guest-agent
@@ -97,7 +92,7 @@ claire.mount_config() {
         
         # Check if nfs-common is installed
         if ! command -v nfsstat &> /dev/null; then
-          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install -y nfs-common
+          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install nfs-common -y
         fi
 
         msgbox "claire.mount /config"
@@ -139,7 +134,7 @@ claire.mount_data() {
     display_menu_header
     # Check if cifs-utils is installed
     if ! command -v mount.cifs &> /dev/null; then
-      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install -y cifs-utils
+      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install cifs-utils -y
     fi
 
     # Display mount options
@@ -299,34 +294,6 @@ claire.install() {
     logo
 }
 
-install_docker () {
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker docker-engine docker.io containerd runc
-  gum spin --spinner dot --title "Installing Docker" -- apt-get update
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install ca-certificates curl gnupg lsb-release
-  gum spin --spinner dot --title "Installing Docker" -- rm /usr/share/keyrings/docker-archive-keyring.gpg
-  gum spin --spinner dot --title "Installing Docker" -- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  gum spin --spinner dot --title "Installing Docker" -- apt-get update
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install docker-ce docker-ce-cli containerd.io -y
-  sudo groupadd docker
-  sudo usermod -aG docker $USER 
-}
-
-create_docker_network () {
-  sed -i "s/^dockernet=.*$/dockernet=$name/" /opt/claire/claire.menu/.profile
-
-  docker network create $name > /dev/null 2>&1
-}
-
-install_docker_compose () {
-   mkdir -p ~/.docker/cli-plugins/
-   gum spin --spinner dot --title "Installing Docker Compose" -- curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-   chmod +x ~/.docker/cli-plugins/docker-compose
-   ## install compose switch - https://docs.docker.com/compose/cli-command/#compose-switch
-   gum spin --spinner dot --title "Installing Docker Compose" -- curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh 
-   docker compose version
-}
-
 install_node() {
   gum spin --spinner dot --title "Installing Node" -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
@@ -359,9 +326,6 @@ install_qemu_guest_agent
 claire.mount_config
 claire.mount_data
 checklist
-claire.install
 install_node
-install_docker
-create_docker_network
-install_docker_compose
+claire.install
 update_upgrade

@@ -15,7 +15,7 @@ title="Whisparr"                               # Readable App Title
 image="cr.hotio.dev/hotio/whisparr:nightly"    # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
-      - /data:/media"                     # Volumes
+      - /data/media/extra:/media"                     # Volumes
 tp_app=""                                      # Theme Park App Name
 porte="6969"                                   # External Port
 porti="6969"                                   # Internal Port

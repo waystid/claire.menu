@@ -1,6 +1,6 @@
 #!/bin/bash
 ######################################################################
-# Title   : Install Uptime Kuma
+# Title   : Install JDownloader2
 # By      : DiscDuck, Taos15
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
@@ -10,13 +10,14 @@
 source /opt/claire/claire.menu/claire.func.sh
 
 # App Info
-app="uptime-kuma"                     # App Name
-title="Uptime Kuma"                   # Readable App Title
-image="louislam/uptime-kuma:1"        # Image and Tag
+app="jdownloader-2"                     # App Name
+title="JDownloader2"                   # Readable App Title
+image="jlesage/jdownloader-2:latest"        # Image and Tag
 volumes="    volumes:
-      - /config/uptime-kuma:/app/data" # Volumes
-porte="3001"                          # External Port
-porti="3001"                          # Internal Port
+      - /config/jdownloader-2:/config:rw
+      - /data/downloads:/output:rw" # Volumes
+porte="5800"                          # External Port
+porti="5800"                          # Internal Port
 extrapayload=""                       # Extra Payload to add to the Compose
 
 # Execute

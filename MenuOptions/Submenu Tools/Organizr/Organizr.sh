@@ -12,7 +12,7 @@ source /opt/claire/claire.menu/claire.func.sh
 # App Info
 app="organizr"                                          # App Name
 title="Organizr"                                        # Readable App Title
-image="ghcr.io/organizr/organizr"                  # Image and Tag
+image="ghcr.io/organizr/organizr:latest"                  # Image and Tag
 volumes="    volumes:
       - /config/organizr:/config" # Volumes
 porte="8082"                                          # External Port

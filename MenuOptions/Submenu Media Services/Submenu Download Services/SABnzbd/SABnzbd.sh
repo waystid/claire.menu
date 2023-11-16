@@ -15,7 +15,7 @@ title="SABnzbd"                                # Readable App Title
 image="lscr.io/linuxserver/sabnzbd:latest"     # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
-      - /data:/media"                     # Volumes
+      - /data/usenet:/media"                     # Volumes
 tp_app="sabnzbd"                                # Theme Park App Name
 porte="8081"                                   # External Port
 porti="8080"                                   # Internal Port

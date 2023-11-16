@@ -15,7 +15,7 @@ title="qbittorrent"                                # Readable App Title
 image="cr.hotio.dev/hotio/qbittorrent"     # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
-      - /data:/media"                     # Volumes
+      - /data/torrents:/media"                     # Volumes
 tp_app="qbittorrent"                                # Theme Park App Name
 porte="8080"                                   # External Port
 porti="8080"                                   # Internal Port

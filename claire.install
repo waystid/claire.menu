@@ -305,7 +305,7 @@ install_node() {
 update_upgrade() {
   cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
     "./All Steps in One.sh"
-  cd "/opt/claire/claire.menu/MenuOptions/Submenu Media/Grey Fox"
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Media Services/Grey Fox"
     "./Grey Fox.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"

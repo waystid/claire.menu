@@ -279,7 +279,7 @@ app() {
   # Local Docker
   if [ "$app" != "registry" ]; then
     #Update image file
-    update_image_file="/data/resources/claire/update_images"
+    update_image_file="/data/media/resources/claire/update_images"
     
     # Check if the line is already in the file
     if ! grep -qF "$image" "$update_image_file"; then

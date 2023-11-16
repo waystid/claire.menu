@@ -33,8 +33,8 @@ greyfox () {
   msgbox "Installing Maintenance Services - Step 3 of 3"
   gum spin --spinner meter --show-output --title "Installing gluetun" -- ../../Submenu Tools/gluetun/gluetun.sh
   gum spin --spinner monkey --title "Installing Notifiarr" -- ../Submenu Tools/Notifiarr/Notifiarr.sh
-  gum spin --spinner monkey --title "Installing Dozzle" -- ../../Submenu Tools/Dozzle/Dozzle.sh
-  gum spin --spinner monkey --title "Installing Portainer" -- ../../Submenu Docker/Portainer/Portainer.sh
+  gum spin --spinner monkey --title "Installing Dozzle" -- bash -c ../../Submenu Tools/Dozzle/Dozzle.sh
+  gum spin --spinner monkey --title "Installing Portainer" -- bash -c ../../Submenu Docker/Portainer/Portainer.sh
   
   msgbox "All done. Press any key to continue"
 }

@@ -16,7 +16,7 @@ image="portainer/portainer-ce:latest"                # Image and Tag
 volumes="    volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./portainer-data:/data"                      # Volumes
+      - /config/\${APP_NAME:?err}/data/data:/data"                      # Volumes
 tp_app=""                                            # Theme Park App Name
 porte="9001"                                         # External Port
 porti="9000"                                         # Internal Port

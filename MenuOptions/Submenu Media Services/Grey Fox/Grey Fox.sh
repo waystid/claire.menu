@@ -14,12 +14,11 @@ greyfox () {
   msgbox "Installing Starr Apps - Step 1 of 3" 
   # gum spin --spinner line --title "Installing Bazarr" -- ../Submenu The ARRs/Bazarr/Bazarr.sh
   "../Submenu The ARRs/Lidarr/Lidarr.sh"
-  "../Submenu The ARRs/Prowlarr/Prowlarr.sh"
   "../Submenu The ARRs/Radarr/Radarr.sh"
   "../Submenu The ARRs/Radarr 4K/Radarr 4K.sh"
   "../Submenu The ARRs/Readarr/Readarr.sh"
   "../Submenu The ARRs/Sonarr/Sonarr.sh"
-  "./Submenu The ARRs/Sonarr 4K/Sonarr 4K.sh"
+  "../Submenu The ARRs/Sonarr 4K/Sonarr 4K.sh"
   "../Submenu The ARRs/Whisparr/Whisparr.sh"  
   
   msgbox "Installing Downloaders - Step 2 of 3"
@@ -32,6 +31,7 @@ greyfox () {
   
   msgbox "Installing Maintenance Services - Step 3 of 3"
   "../../Submenu Tools/gluetun/gluetun.sh"
+  "../Submenu The ARRs/Prowlarr/Prowlarr.sh"
   "../Submenu Tools/Notifiarr/Notifiarr.sh"
   "../../Submenu Docker/Portainer/Portainer.sh"
   

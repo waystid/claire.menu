@@ -150,7 +150,7 @@ claire.mount_data() {
     # Create and mount /data directory
     mkdir -p /data
     echo "#media" | tee -a /etc/fstab
-    echo "//192.168.1.18/nimbus/data/media /data cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+    echo "//192.168.1.18/nimbus/data /data cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
     mount /data
 
     stty echo
@@ -305,12 +305,9 @@ install_node() {
 update_upgrade() {
   cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
     "./All Steps in One.sh"
-  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle"
-    "./Dozzle.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
-  reboot
 }
 
 ##### Run the script #####

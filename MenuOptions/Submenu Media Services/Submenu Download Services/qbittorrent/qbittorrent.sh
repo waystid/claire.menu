@@ -43,8 +43,7 @@ services:
       - /config/\${APP_NAME:?err}:/config
       - /data/torrents:/data/torrents"
     ports:
-      - \${PORTE:?err}:8080
-      - \${PORTI:?err}:8080                  
+      - \${PORTE:?err}:${PORTI:?err}      
     restart: unless-stopped
     security_opt:
       - apparmor:unconfined

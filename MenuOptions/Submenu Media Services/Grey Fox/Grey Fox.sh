@@ -22,15 +22,15 @@ greyfox () {
   "../Submenu The ARRs/Whisparr/Whisparr.sh"  
   
   msgbox "Installing Downloaders - Step 2 of 3"
+  "../Submenu Download Services/qbittorrent/qbittorrent.sh"
   "../Submenu Download Services/ jdownloader-2/jdownloader-2.sh"
   "../Submenu Download Services/nzbget/nzbget.sh"
   "../Submenu Download Services/qbittorrent/qbittorrent.sh"
   "../Submenu Download Services/sabnzbd/sabnzbd.sh"
-  "../Submenu Download Services/qbittorrent/qbittorrent.sh"
   "../Submenu Download Services/ytdl_material/ytdl_material.sh"
   
   msgbox "Installing Maintenance Services - Step 3 of 3"
-  "../../Submenu Tools/gluetun/gluetun.sh"
+  "../../Submenu Networking/Gluetun/Gluetun.sh"
   "../Submenu The ARRs/Prowlarr/Prowlarr.sh"
   "../Submenu Tools/Notifiarr/Notifiarr.sh"
   "../../Submenu Docker/Portainer/Portainer.sh"

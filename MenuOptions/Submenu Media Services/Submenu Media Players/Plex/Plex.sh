@@ -44,7 +44,7 @@ services:
     volumes:
       - /config/plex/config:/config
       - /config/plex/transcode:/transcode
-      - /data:/media
+      - /data/media:/media
     restart: unless-stopped
     security_opt:
       - apparmor:unconfined

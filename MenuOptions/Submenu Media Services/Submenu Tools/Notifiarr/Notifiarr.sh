@@ -12,11 +12,12 @@ source /opt/claire/claire.menu/claire.func.sh
 # App Info
 app="notifiarr"                                  # App Name
 title="Notifiarr"                                # Readable App Title
-image="golift/notifiarr"     # Image and Tag
+image="golift/notifiarr:latest"     # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
       - /var/run/utmp:/var/run/utmp
-      - /etc/machine-id:/etc/machine-id" # Volumes
+      - /etc/machine-id:/etc/machine-id
+    "        # Volumes
 tp_app="notifiarr"                               # Theme Park App Name
 porte="5454"                                    # External Port
 porti="5454"                                    # Internal Port

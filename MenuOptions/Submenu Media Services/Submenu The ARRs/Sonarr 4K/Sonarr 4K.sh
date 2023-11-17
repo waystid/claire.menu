@@ -15,7 +15,7 @@ title="Sonarr 4K"                              # Readable App Title
 image="lscr.io/linuxserver/sonarr:develop"      # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
-      - /data:/media"                     # Volumes
+      - /data:/data"                     # Volumes
 tp_app="sonarr"                                # Theme Park App Name
 porte="8990"                                   # External Port
 porti="8989"                                   # Internal Port

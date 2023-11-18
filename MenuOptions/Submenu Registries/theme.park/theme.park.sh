@@ -18,8 +18,8 @@ volumes="    volumes:
 tp_app=""                                       # Theme Park App Name
 porte="8089"                                    # External Port
 porti="80"                                    # Internal Port
-porte="4443"                                    # External Port
-porti="443"                                    # Internal Port
+porte2="4443"                                    # External Port
+porti2="443"                                    # Internal Port
 extrapayload="    environment:
       - TP_URLBASE=themepark #optional          
 "                                 # Extra Payload to add to the Compose

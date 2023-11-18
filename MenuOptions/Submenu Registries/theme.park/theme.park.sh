@@ -31,7 +31,6 @@ PORTI=$porti
 PORTE2=$porte2
 PORTI2=$porti2
 
-
 EOF
   tee <<-EOF > compose.yaml
 services:
@@ -94,4 +93,4 @@ local_appfinalization () {
   fi
 
 local_appcreate
-local_appfinalization 
+local_appfinalization

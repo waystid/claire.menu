@@ -10,7 +10,7 @@
 source /opt/claire/claire.menu/claire.func.sh
 
 # App Info
-app="theme.park"                                  # App Name
+app="themepark"                                  # App Name
 title="theme.park registry"                         # Readable App Title
 image="ghcr.io/themepark-dev/theme.park"                         # Image and Tag
 volumes="    volumes:
@@ -21,7 +21,7 @@ porti="80"                                    # Internal Port
 porte="4443"                                    # External Port
 porti="443"                                    # Internal Port
 extrapayload="    environment:
-      - PUID=1000          
+      - TP_URLBASE=themepark #optional          
 "                                 # Extra Payload to add to the Compose
 
 # Execute

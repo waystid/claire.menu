@@ -62,7 +62,23 @@ local_appfinalization () {
   echo
 }
 
-# Execute
+# E  # Local Docker
+  if [ "$app" != "registry" ]; then
+    #Update image file
+    update_image_file="/data/media/resources/claire/update_images"
+    
+    # Check if the line is already in the file
+    if ! grep -qF "$image" "$update_image_file"; then
+      sudo chmod u+w $update_image_file
+      echo "${image} | ${app}:${image_tag}" >> $update_image_file
+    else
+      echo "Line already exists in $update_image_file"
+    fi
+    # Execute local.docker function here
+    local.docker
+  else
+    echo "Skipping local.docker function because app is set to 'registry'"
+  fixecute
 
 local_appcreate
 local_appfinalization

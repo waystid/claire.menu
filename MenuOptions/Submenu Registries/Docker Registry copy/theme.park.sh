@@ -42,6 +42,8 @@ services:
       - /config/.id.env
       - /config/.timezone.env
       - /config/.themepark.env
+    environment:
+      - TP_URLBASE=themepark #optional
     volumes:
       - /config/\${APP_NAME:?err}:/config
       - /data/torrents:/data/torrents"

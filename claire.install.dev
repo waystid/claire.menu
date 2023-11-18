@@ -3,17 +3,6 @@
 # Set hostname variable
 name=$(hostname)
 
-#Data Sise Variable
-totalDataSize=0
-
-# Function to update the total data size
-updateDataSize() {
-    # Get the file size of the downloaded file
-    fileSize=$(du -sb "$1" | awk '{print $1}')
-    
-    # Add the file size to the total data size
-    totalDataSize=$((totalDataSize + fileSize))
-}
 # Function to display menu header
 display_menu_header() {
   tput clear
@@ -31,41 +20,31 @@ claire.installer - Installer for claire.menu
 EOF
   tput sgr0     
 }
+
 # Function to install Gum
 install_gum() {
     # Install Gum
     display_menu_header
     if ! command -v gum &> /dev/null; then
         # Install Gum
-        apt-get install curl -y
-        updateDataSize curl
+        apt-get install -y curl gpg
         mkdir -p /etc/apt/keyrings
         curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-        updateDataSize "/etc/apt/keyrings/charm.gpg"
         echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
         apt update && apt upgrade -y && apt-get install gum -y
-        updateDataSize gum
     fi
 }
 
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "unzip" "python3-pip" "dos2unix" "glances" "tmux" "zsh" "mc")
+    apps=("nano" "rsync" "wget" "sudo" "git" "ruby" "jq")
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then
-            gum spin --spinner dot --title "Installing $app" -- apt-get install "$app" -y
-            updateDataSize $app
+            gum spin --spinner dot --title "Installing $app" -- apt-get install -y "$app"
         fi
     done
-    gum spin --spinner dot --title "Installing mdless" -- gem install mdless
-    # Pip psutil
-    gum spin --spinner dot --title "Installing python3-dev" -- apt-get install gcc python3-dev \
-    && updateDataSize python3-dev
-    gum spin --spinner dot --title "Installing psutil" -- pip install --no-binary :all: psutil
-     # Google Download
-    gum spin --spinner dot --title "Installing gdown" -- pip3 install gdown
 }
 
 # Function to install and enable qemu-guest-agent
@@ -75,8 +54,7 @@ install_qemu_guest_agent() {
         if ! command -v qemu-ga &> /dev/null; then
             echo "QEMU guest agent is not installed. Installing..."
             gum spin --spinner dot --title "Updating" -- apt-get update
-            gum spin --spinner dot --title "Installing QEMU guest agent" -- apt-get install qemu-guest-agent -y
-            updateDataSize qemu-guest-agent
+            gum spin --spinner dot --title "Installing QEMU guest agent" -- apt-get install qemu-guest-agent
         else
             echo "QEMU guest agent is already installed."
         fi
@@ -114,100 +92,38 @@ claire.mount_config() {
         
         # Check if nfs-common is installed
         if ! command -v nfsstat &> /dev/null; then
-          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install -y nfs-common
+          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install nfs-common -y
         fi
 
         msgbox "claire.mount /config"
-        # Create Working Directories
-        mkdir -p /config claire.temp
 
-        # Mount Temp Directory
-        mount -t nfs 192.168.1.18:/mnt/ssd/resources/config claire.temp
+        # Create and mount config folder        
+        echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0" | tee -a /etc/fstab
+        echo "192.168.1.18:/mnt/ssd/config /mnt/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
+        echo "192.168.1.55:/volume1/docker-pve /mnt/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
 
-        # Create and mount config folder
-        mkdir -p claire.temp/dev/$name
-        echo "192.168.1.18:/mnt/ssd/resources/config/dev/$name /config nfs4 defaults 0 0" | tee -a /etc/fstab
-        mount /config
+        mkdir -p /mnt/resources /mnt/ssd /mnt/nervana
+        mount /mnt/resources
+        mount /mnt/ssd
+        mount /mnt/nervana
 
-        # Other Mounts
-        # echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0"  | tee -a /etc/fstab
-        # echo "192.168.1.18:/mnt/nimbus/configs /mnt/config/nimbus nfs4 defaults 0 0" | tee -a /etc/fstab
-        # echo "192.168.1.18:/mnt/ssd/config /mnt/config/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
+        mkdir -p /mnt/resources/config/docker/$name
+        
 
-        # echo "192.168.1.55:/volume1/docker-pve /mnt/config/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
-
-        #media
-        # echo "//192.168.1.18/nimbus/data /mnt/media cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-        # echo "//192.168.1.18/nimbus /mnt/full cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-
-        # Unmount temp folder and create symlinks
-        umount claire.temp
-        rmdir claire.temp
-        mkdir -p /config/portainer/apps
-        ln -s /config/portainer/apps/ /portainer
+     
+        
         echo "Mount configured successfully."
         
     else
         echo "Error: IP is not in the specified range."
     fi
 }
-
-# Claire Mount
-claire.mount_config.dev() {
-    display_menu_header
-
-    # Check if the IP is in the specified range
-    check_ip_range
-    if [ $? -eq 0 ]; then
-        
-        # Check if nfs-common is installed
-        if ! command -v nfsstat &> /dev/null; then
-          gum spin --spinner dot --title "Installing NFS-Common" -- apt-get install -y nfs-common
-          updateDataSize nfs-common
-        fi
-
-        msgbox "claire.mount /config"
-        # Create Working Directories
-        mkdir -p /config claire.temp
-
-        # Mount Temp Directory
-        mount -t nfs 192.168.1.18:/mnt/ssd/resources/config/docker claire.temp
-
-        # Create and mount config folder
-        mkdir -p claire.temp/$name
-        echo "192.168.1.18:/mnt/ssd/resources/config/docker/$name /config nfs4 defaults 0 0" | tee -a /etc/fstab
-        mount /config
-
-        # Other Mounts
-        # echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0"  | tee -a /etc/fstab
-        # echo "192.168.1.18:/mnt/nimbus/configs /mnt/config/nimbus nfs4 defaults 0 0" | tee -a /etc/fstab
-        # echo "192.168.1.18:/mnt/ssd/config /mnt/config/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
-
-        # echo "192.168.1.55:/volume1/docker-pve /mnt/config/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
-
-        #media
-        # echo "//192.168.1.18/nimbus/data /mnt/media cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-        # echo "//192.168.1.18/nimbus /mnt/full cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-
-        # Unmount temp folder and create symlinks
-        umount claire.temp
-        rmdir claire.temp
-        mkdir -p /config/portainer/apps
-        ln -s /config/portainer/apps/ /portainer
-        echo "Mount configured successfully."
-        
-    else
-        echo "Error: IP is not in the specified range."
-    fi
-}
-
 
 claire.mount_data() {
     display_menu_header
     # Check if cifs-utils is installed
     if ! command -v mount.cifs &> /dev/null; then
-      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install -y cifs-utils
-      updateDataSize cifs-utils
+      gum spin --spinner dot --title "Installing CIFS-Utils" -- apt-get install cifs-utils -y
     fi
 
     # Display mount options
@@ -223,10 +139,16 @@ claire.mount_data() {
     # Create and mount /data directory
     mkdir -p /data
     echo "#media" | tee -a /etc/fstab
-    echo "//192.168.1.18/nimbus/data/media /data cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-    mount /data
-
+    echo "//192.168.1.18/nimbus /mnt/nimbus cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+    mount /mnt/nimbus
     stty echo
+    
+    # Create symlinks        
+    ln -s /mnt/resources/config/docker/$name/ /config
+    ln -s /mnt/nimbus/data/ /data
+    ln -s /mnt/nimbus/data/media/resources/ /resources
+    ln -s 
+    
     echo "Mount configured successfully."
 }
 
@@ -314,7 +236,6 @@ claire.install() {
 
     # Clone claire.menu
     git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1
-    updateDataSize $ifolder1
     find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
     
     # mkdir claire.temp
@@ -335,7 +256,6 @@ claire.install() {
 
     # Clone ibramenu
     git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git $ifolder
-    updateDataSize $ifolder
     find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
 
 
@@ -369,49 +289,6 @@ claire.install() {
     logo
 }
 
-install_docker () {
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker-engine
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove docker.io
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove containerd
-  gum spin --spinner dot --title "Installing Docker" -- apt-get remove runc
-  gum spin --spinner dot --title "Installing Docker" -- apt-get update
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install ca-certificates -y
-  updateDataSize ca-certificates
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install gnupg -y
-  updateDataSize gnupg 
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install lsb-release -y
-  updateDataSize lsb-release
-  gum spin --spinner dot --title "Installing Docker" -- rm /usr/share/keyrings/docker-archive-keyring.gpg
-  gum spin --spinner dot --title "Installing Docker" -- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  updateDataSize /usr/share/keyrings/docker-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  gum spin --spinner dot --title "Installing Docker" -- apt-get update
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install docker-ce -y
-  updateDataSize docker-ce
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install docker-ce-cli -y
-  updateDataSize docker-ce-cli
-  gum spin --spinner dot --title "Installing Docker" -- apt-get install containerd.io -y
-  updateDataSize containerd.io
-  sudo groupadd docker
-  sudo usermod -aG docker $USER 
-}
-
-create_docker_network () {
-  sed -i "s/^dockernet=.*$/dockernet=$name/" /opt/claire/claire.menu/.profile
-
-  docker network create $name > /dev/null 2>&1
-}
-
-install_docker_compose () {
-   mkdir -p ~/.docker/cli-plugins/
-   gum spin --spinner dot --title "Installing Docker Compose" -- curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-   chmod +x ~/.docker/cli-plugins/docker-compose
-   ## install compose switch - https://docs.docker.com/compose/cli-command/#compose-switch
-   gum spin --spinner dot --title "Installing Docker Compose" -- curl -fL https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh 
-   docker compose version
-}
-
 install_node() {
   gum spin --spinner dot --title "Installing Node" -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
@@ -423,11 +300,11 @@ install_node() {
 update_upgrade() {
   cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
     "./All Steps in One.sh"
-  cd "/opt/claire/claire.menu/MenuOptions/Submenu Tools/Dozzle"
-    "./Dozzle.sh"
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Media Services/Grey Fox"
+    "./Grey Fox.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
-  msgbox "Total data size added to the machine: $totalDataSize bytes. Please remember to reboot if the process did major Upgrades like the Kernel"
+  msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
 }
 
 ##### Run the script #####
@@ -443,9 +320,6 @@ install_qemu_guest_agent
 claire.mount_config
 claire.mount_data
 checklist
-claire.install
 install_node
-install_docker
-create_docker_network
-install_docker_compose
+claire.install
 update_upgrade

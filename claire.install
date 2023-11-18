@@ -37,7 +37,7 @@ install_gum() {
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    apps=("nano" "rsync" "wget" "ssh" "sudo" "git" "ruby" "jq")
+    apps=("nano" "rsync" "wget" "git" "ruby" "jq")
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then

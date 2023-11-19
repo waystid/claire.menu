@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################################
 # Title   : Install Docker Registry
-# By      : Lu Cipher, CE)
+# By      : Lu Cipher, CE0
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
 ######################################################################
@@ -23,4 +23,4 @@ extrapayload=""                                 # Extra Payload to add to the Co
 
 # Execute
 app
-echo '{"insecure-registries":["192.168.1.10:5000"]}' >> /etc/docker/daemon.json
+#echo '{"insecure-registries":["192.168.1.10:5000"]}' >> /etc/docker/daemon.json

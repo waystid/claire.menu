@@ -13,7 +13,7 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
 # App Info
 app="uptime-kuma"                     # App Name
 title="Uptime Kuma"                   # Readable App Title
-image="louislam/uptime-kuma:latest"        # Image and Tag
+image="louislam/uptime-kuma:1"        # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/app/data" # Volumes
 porte="3001"                          # External Port

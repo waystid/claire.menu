@@ -13,7 +13,7 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
 # App Info
 app="gitlab-ce"                                  # App Name
 title="Gitlab"                                # Readable App Title
-image="gitlab/gitlab-ce:latest'"             # Image and Tag
+image="gitlab/gitlab-ce:latest"             # Image and Tag
 tp_app=""                               # Theme Park App Name
 porte="8082"                                       # External Port
 porti="80"

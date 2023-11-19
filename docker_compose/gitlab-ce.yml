@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'git.waystid.dev'
+    container_name: gitlab-ce
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'git.waystid.dev'
+    ports:
+      - '8082:80'
+      - '8445:443'
+    volumes:
+      - '/config/gitlab-ce/config:/etc/gitlab'
+      - '/config/gitlab-ce/logs:/var/log/gitlab'
+      - '/config/gitlab-ce/data:/var/opt/gitlab'
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner    
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/config/gitlab-ce/gitlab-runner:/etc/gitlab-runner'

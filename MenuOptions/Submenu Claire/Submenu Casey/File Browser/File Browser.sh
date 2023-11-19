@@ -12,10 +12,9 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # App Info
 app="file-browser"                               # App Name
-title="File Broswer"                             # Readable App Title
+title="File Browser"                             # Readable App Title
 image="filebrowser/filebrowser:latest"  # Image and Tag
 volumes="    volumes:
-      - /config/\${APP_NAME:?err}/filebrowser.db:/database.db
       - /mnt/:/srv"
                                    # Volumes
 tp_app=""                                       # Theme Park App Name
@@ -24,5 +23,7 @@ porti="80"                                    # Internal Port
 extrapayload=""                                 # Extra Payload to add to the Compose
 
 # Execute
-filebrowser
+
 app
+echo The default username and password is admin:admin
+echo Be sure to change this immediately! http://192.168.1.15:8081/settings/profile

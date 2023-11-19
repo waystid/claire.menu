@@ -8,7 +8,7 @@
 
 # Include claire.func for all the awesome functions
 source /opt/claire/claire.menu/claire.func.sh
-source /opt/claire/claire.menu/claire.func/*
+source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # Record lan ip to access WEBUI
 read -p "Enter you lan Network EX. (192.168.1.0/24)            : " IP

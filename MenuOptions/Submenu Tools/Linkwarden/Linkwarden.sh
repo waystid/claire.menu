@@ -12,7 +12,7 @@ sudo mkdir -p /config/Linkwarden
 
 # Include claire.func for all the awesome functions
 source /opt/claire/claire.menu/claire.func.sh
-source /opt/claire/claire.menu/claire.func/*
+source /opt/claire/claire.menu/claire.func/sauce.sh
 # source /opt/ibracorp/ibramenu/MenuOptions/Submenu Networking/Dockerproxy/Dockerproxy.sh
 # Linkwarden config
 

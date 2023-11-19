@@ -29,8 +29,6 @@ IMAGE=$image
 TP_APP=$tp_app
 PORTE=$porte
 PORTI=$porti
-PORTE2=$porte2
-PORTI2=$porti2
 
 EOF
   tee <<-EOF > compose.yaml
@@ -49,7 +47,7 @@ services:
       - /config/\${APP_NAME:?err}:/config
     ports:
       - \${PORTE:?err}:${PORTI:?err}
-      - \${PORTE2:?err}:${PORTI2:?err}      
+      - 4443:443     
     restart: unless-stopped
     security_opt:
       - apparmor:unconfined

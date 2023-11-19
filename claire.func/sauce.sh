@@ -1,3 +1,5 @@
+#!/bin/bash
+
 filebrowser(){
   db_file="/config/filebrowser/filebrowser.db"
 

@@ -1,11 +1,13 @@
 #!/bin/bash
 
-filebrowser(){
+filebrowser() {
   db_file="/config/filebrowser/filebrowser.db"
 
+  # Ensure parent directories exist
+  mkdir -p "$(dirname "$db_file")"
+
+  # Create the file if it doesn't exist
   if [ ! -e "$db_file" ]; then
-    touch ~/filebrowser.db
-    mkdir -p /config/filebrowser/
-    mv ~/filebrowser.db "$db_file"
+    touch "$db_file"
   fi
 }

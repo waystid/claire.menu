@@ -1,6 +1,6 @@
 #!/bin/bash
 ######################################################################
-# Title   : Install Dockge
+# Title   : Install ActivePieces
 # By      : Lu Cipher, CEO
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
@@ -11,8 +11,8 @@ source /opt/claire/claire.menu/claire.func.sh
 source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # App Info
-app="dockge"                     # App Name
-title="Dockge"                   # Readable App Title
+app="active-pieces"                     # App Name
+title="ActivePieces"                   # Readable App Title
 image="louislam/dockge:1"        # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/app/data
@@ -33,4 +33,5 @@ extrapayload="
       #- DOCKGE_STACKS_DIR=/opt/stacks"                       # Extra Payload to add to the Compose
 
 # Execute
+ActivePieces
 app

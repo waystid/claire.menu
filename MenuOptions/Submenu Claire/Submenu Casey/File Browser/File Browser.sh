@@ -7,8 +7,8 @@
 ######################################################################
 
 # Include claire.func for all the awesome functions
-# source /opt/claire/claire.menu/claire.func.sh
-source /opt/claire/claire.menu/claire.func/*
+source /opt/claire/claire.menu/claire.func.sh
+source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # App Info
 app="file-browser"                               # App Name
@@ -19,11 +19,9 @@ volumes="    volumes:
       - /mnt/:/srv"
                                    # Volumes
 tp_app=""                                       # Theme Park App Name
-porte="8443"                                    # External Port
-porti="8443"                                    # Internal Port
-extrapayload="    environment:
-      - PUID=0
-      - PGID=0"                                 # Extra Payload to add to the Compose
+porte="8081"                                    # External Port
+porti="80"                                    # Internal Port
+extrapayload=""                                 # Extra Payload to add to the Compose
 
 # Execute
 filebrowser

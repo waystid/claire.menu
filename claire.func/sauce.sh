@@ -10,3 +10,7 @@ ActivePieces() {
     ngrok config add-authtoken 2YPNtvS37wiFq6SB8BP7zpKOEcs_78UD6r9YoQxDxnas5diUu
     
 }
+
+claire.compose() {
+    
+}

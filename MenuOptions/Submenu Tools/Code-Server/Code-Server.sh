@@ -16,8 +16,8 @@ image="lscr.io/linuxserver/code-server:latest"  # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
       - /config/\${APP_NAME:?err}/code:/code
-      - /opt:/opt" 
-      - /resources/code:/config/workspace
+      - /opt:/opt
+      - /resources/code:/config/workspace"
       -                              # Volumes
 tp_app=""                                       # Theme Park App Name
 porte="8443"                                    # External Port

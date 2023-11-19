@@ -2,7 +2,7 @@
 
 ######################################################################
 # Title   : Claire Update - Updater for claire.menu
-# By      : DiscDuck, Taos15
+# By      : Lu Cipher, CEO
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
 ######################################################################
@@ -24,9 +24,9 @@ rm -rf /opt/claire/claire.menu2
 find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 
 #Update ibramenu
-gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "rm -R /opt/ibracorp/ibramenu/"
-gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
-find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
+# gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "rm -R /opt/ibracorp/ibramenu/"
+# gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
+# find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
 
 # update the custom docker network use in all the containers
 update_docker_network() {

@@ -12,5 +12,5 @@ ActivePieces() {
 }
 
 claire.compose() {
-    
+    echo something
 }

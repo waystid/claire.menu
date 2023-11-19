@@ -46,7 +46,6 @@ services:
       - TP_URLBASE=themepark #optional
     volumes:
       - /config/\${APP_NAME:?err}:/config
-      - /data/torrents:/data/torrents"
     ports:
       - \${PORTE:?err}:${PORTI:?err}
       - \${PORTE2:?err}:${PORTI2:?err}      
@@ -77,7 +76,7 @@ local_appfinalization () {
 # Local Docker
   if [ "$app" != "registry" ]; then
     #Update image file
-    update_image_file="/data/media/resources/claire/update_images"
+    update_image_file="/resources/claire/update_images"
     
     # Check if the line is already in the file
     if ! grep -qF "$image" "$update_image_file"; then

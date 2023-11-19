@@ -15,24 +15,17 @@ ifolder="/opt/ibracorp/ibramenu"
 ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
-bash -c "rm -R /opt/claire/claire.menu/"
-gum spin --spinner dot --title "Updating claire.menu" -- bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
-gum spin --spinner dot --title "Updating claire.menu" -- rsync -av "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
-rm -r /opt/claire/claire.menu2
-
-# mkdir claire.temp
-# mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
-# rsync -av --progress "claire.temp/claire.menu/" "/opt/claire/claire.menu/"
-# find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
-# umount claire.temp
-# rmdir claire.temp
+gum spin --spinner monkey --show-output --title "Updating claire.menu" -- bash -c "rm -Rf /opt/claire/claire.menu/"
+gum spin --spinner monkey --show-output --title "Updating claire.menu" -- bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
+gum spin --spinner monkey --show-output --title "Updating claire.menu" -- rsync -av "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
+rm -rf /opt/claire/claire.menu2
 
 #Change permissions
 find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
 
 #Update ibramenu
-bash -c "rm -R /opt/ibracorp/ibramenu/"
-bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
+gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "rm -R /opt/ibracorp/ibramenu/"
+gum spin --spinner line --show-output --title "Updating ibramenu" -- bash -c "git clone -b main --single-branch https://github.com/ibracorp/ibramenu.git /opt/ibracorp/ibramenu"
 find $ifolder -type f -iname "*.sh" -exec chmod +x {} \;
 
 # update the custom docker network use in all the containers

@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################################
 # Title   : Install Uptime Kuma
-# By      : DiscDuck, Taos15
+# By      : Lu Cipher, CEO
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
 ######################################################################
@@ -13,9 +13,9 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
 # App Info
 app="uptime-kuma"                     # App Name
 title="Uptime Kuma"                   # Readable App Title
-image="louislam/uptime-kuma:1"        # Image and Tag
+image="louislam/uptime-kuma:latest"        # Image and Tag
 volumes="    volumes:
-      - /config/uptime-kuma:/app/data" # Volumes
+      - /config/\${APP_NAME:?err}:/app/data" # Volumes
 porte="3001"                          # External Port
 porti="3001"                          # Internal Port
 extrapayload=""                       # Extra Payload to add to the Compose

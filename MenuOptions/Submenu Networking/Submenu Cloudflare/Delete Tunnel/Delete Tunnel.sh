@@ -9,6 +9,7 @@
 
 # Include claire.func for all the awesome functions
 source /opt/claire/claire.menu/claire.func.sh
+source /opt/claire/claire.menu/claire.func/*
 
 # Greetings
 greetings () {

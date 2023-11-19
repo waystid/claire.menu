@@ -9,6 +9,7 @@
 
 # Include claire.func for all the awesome functions
 source /opt/claire/claire.menu/claire.func.sh
+source /opt/claire/claire.menu/claire.func/*
 
 all_steps () {
   msgbox "Update and Upgrade - Step 1 of 4"

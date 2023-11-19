@@ -17,6 +17,7 @@ EMAIL=$YOUREMAIL
 EOF
 # Include claire.func for all the awesome functions
 source /opt/claire/claire.menu/claire.func.sh
+source /opt/claire/claire.menu/claire.func/*
 # source /opt/ibracorp/ibramenu/MenuOptions/Submenu Networking/Dockerproxy/Dockerproxy.sh
 # Traefik config
 

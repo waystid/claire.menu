@@ -164,7 +164,7 @@ EOF
 local.docker() {
 
   image_tag=$(echo $image | awk -F':' '{print $NF}')
-  registry_url="192.168.1.10:5000/claire/"
+  registry_url="docker.waystid.dev/claire/"
 
   # Check if the image_name contains the local registry address
   if [[ "${image}" == *"${registry_url}"* ]]; then

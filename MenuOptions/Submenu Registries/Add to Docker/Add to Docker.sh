@@ -14,7 +14,7 @@ logo
 original_image=$(gum input --prompt "Original image" --placeholder "Original docker image")
 
 # Define the source image and destination repo
-TARGET_REPO="docker.waystid.dev/claire/theme.park"
+TARGET_REPO="docker.waystid.dev/claire/"
 
 # Pull the Docker image from GitHub
 echo "Pulling Docker image from GitHub..."

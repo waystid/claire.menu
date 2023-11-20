@@ -18,9 +18,7 @@ volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config
       - /config/\${APP_NAME:?err}/code:/code
       - /opt:/opt
-      - /resources/code:/config/workspace
-      - /vms:/vms"
-      -                              # Volumes
+      - /resources/code:/config/workspace"      # Volumes
 tp_app=""                                       # Theme Park App Name
 porte="8443"                                    # External Port
 porti="8443"                                    # Internal Port

@@ -26,10 +26,8 @@ We will now automatically install your Cloudflare Tunnel.
 Please enter all parameters without any "".
 
 EOF
-  read -p "Your Domain (domain.com)            : " domain
-  read -p "The IP address of your Reverse Proxy: " ip
-  read -p "The port of your Reverse Proxy      : " port
-  read -p "The tunnel name (lower caps)        : " tunnel
+  read -p "The tunnel name (lower caps)        : " tunnelname
+  read -p "Token: " token
   echo
   }
 
@@ -49,7 +47,7 @@ name: $tunnelname
 services:
   cloudflared:
     image: cloudflare/cloudflared
-    container_name: $app_$tunnelname
+    container_name: cloudflared_$tunnelname
     restart: always
     volumes:
       - /config/cloudflared/$tunnelname:/home/nonroot/.cloudflared/
@@ -60,12 +58,8 @@ EOF
   docker compose up -d --force-recreate
 }
 
-create.tunnel(){
-
-}
-
 # Execute
 greetings
-#parameters
+parameters
 preparations
-#tunnelcreation
+tunnelcreation

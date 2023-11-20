@@ -18,7 +18,7 @@ logo
 msgbox "claire.next"
 
 # App Info
-app="nextcloud-casey"           # App Name
+app="boxdrop_local"           # App Name
 title="Nextcloud"        # Readable App Title
 image="nextcloud:apache" # Image and Tag
 
@@ -161,7 +161,7 @@ services:
         driver: bridge
         external: true
     ports:
-      - 8095:80
+      - 8075:80
     env_file:
       - /config/.id.env
       - /config/.timezone.env

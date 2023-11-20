@@ -33,9 +33,9 @@ EOF
 
 # Preparations
 preparations () {
-  mkdir -p /config/cloudflared
-  chmod -R 777 /config/cloudflared
-  cd /config/cloudflared
+  mkdir -p /config/cloudflared/$tunnelname
+  chmod -R 777 /config/cloudflared/$tunnelname
+  cd /config/cloudflared/$tunnelname
 }
 
 # Tunnel Creation
@@ -43,7 +43,6 @@ tunnelcreation () {
   msgbox "Tunnel Authentication"
 
   tee <<-EOF > compose.yaml
-name: $tunnelname
 services:
   cloudflared:
     image: cloudflare/cloudflared

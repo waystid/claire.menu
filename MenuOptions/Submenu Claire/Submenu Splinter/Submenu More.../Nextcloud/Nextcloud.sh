@@ -18,7 +18,7 @@ logo
 msgbox "claire.next"
 
 # App Info
-app="nextcloud"           # App Name
+app="nextcloud-casey"           # App Name
 title="Nextcloud"        # Readable App Title
 image="nextcloud:apache" # Image and Tag
 

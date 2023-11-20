@@ -12,7 +12,7 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # App Info
 app="theme-park"                                  # App Name
-title="theme.park registry"                                # Readable App Title
+title="themepark"                                # Readable App Title
 image="ghcr.io/themepark-dev/theme.park"             # Image and Tag
 porte="8089"                                       # External Port
 porti="80"                                       # Internal Port
@@ -22,7 +22,8 @@ porti2="443"                                       # Internal Port
 # App
 local_appcreate () {
   msgbox "Installing $title..."
-  mkdir -p /config/$app && cd /config/$app
+  mkdir -p /config/$app
+  cd /config/$app
   tee <<-EOF > .env
 APP_NAME=$app
 IMAGE=$image
@@ -44,9 +45,9 @@ services:
     environment:
       - TP_URLBASE=themepark #optional
     volumes:
-      - /config/\${APP_NAME:?err}:/config
+      - /config/theme-park:/config
     ports:
-      - \${PORTE:?err}:${PORTI:?err}
+      - 8089:80
       - 4443:443     
     restart: unless-stopped
     security_opt:

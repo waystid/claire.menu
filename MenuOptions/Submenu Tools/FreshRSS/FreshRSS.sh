@@ -1,7 +1,7 @@
 #!/bin/bash
 ######################################################################
-# Title   : Install Komga
-# By      : DiscDuck, Taos15
+# Title   : Install FreshRSS
+# By      : Lu Cipher, CEO
 # License : General Public License GPL-3.0-or-later
 # Another fine product brought to you by Claire™
 ######################################################################
@@ -16,7 +16,7 @@ title="FreshRSS"                            # Readable App Title
 image="lscr.io/linuxserver/freshrss:latest" # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config" # Volumes
-tp_app="Plex"                                   # Theme Park App Name
+tp_app="plex"                                   # Theme Park App Name
 porte="8040"                                    # External Port
 porti="80"                                      # Internal Port
 extrapayload=""                                 # Extra Payload to add to the Compose

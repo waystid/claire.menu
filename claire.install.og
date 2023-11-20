@@ -20,7 +20,6 @@ claire.installer - Installer for claire.menu
 EOF
   tput sgr0     
 }
-
 # Function to install Gum
 install_gum() {
     # Install Gum
@@ -38,13 +37,14 @@ install_gum() {
 # Function to install essential apps
 install_essential_apps() {
     display_menu_header
-    apps=("nano" "rsync" "wget" "sudo" "git" "ruby" "jq")
+    apps=("nano" "rsync" "wget" "git" "ruby" "jq")
     
     for app in "${apps[@]}"; do
         if ! command -v "$app" > /dev/null 2>&1; then
             gum spin --spinner dot --title "Installing $app" -- apt-get install -y "$app"
         fi
     done
+    gum spin --spinner dot --title "Installing mdless" -- gem install mdless
 }
 
 # Function to install and enable qemu-guest-agent
@@ -96,22 +96,33 @@ claire.mount_config() {
         fi
 
         msgbox "claire.mount /config"
+        # Create Working Directories
+        mkdir -p /config claire.temp
 
-        # Create and mount config folder        
-        echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0" | tee -a /etc/fstab
-        echo "192.168.1.18:/mnt/ssd/config /mnt/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
-        echo "192.168.1.55:/volume1/docker-pve /mnt/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
+        # Mount Temp Directory
+        mount -t nfs 192.168.1.18:/mnt/ssd/resources/config/docker claire.temp
 
-        mkdir -p /mnt/resources
-        mkdir -p /mnt/ssd
-        mkdir -p /mnt/nervana
+        # Create and mount config folder
+        mkdir -p claire.temp/$name
+        echo "192.168.1.18:/mnt/ssd/resources/config/docker/$name /config nfs4 defaults 0 0" | tee -a /etc/fstab
+        mount /config
 
-        mount /mnt/resources
-        mount /mnt/ssd
-        mount /mnt/nervana
+        # Other Mounts
+        # echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0"  | tee -a /etc/fstab
+        # echo "192.168.1.18:/mnt/nimbus/configs /mnt/config/nimbus nfs4 defaults 0 0" | tee -a /etc/fstab
+        # echo "192.168.1.18:/mnt/ssd/config /mnt/config/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
 
-        mkdir -p /mnt/resources/config/docker/$name
-        ln -s /mnt/resources/config/docker/$name/ /config
+        # echo "192.168.1.55:/volume1/docker-pve /mnt/config/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
+
+        #media
+        # echo "//192.168.1.18/nimbus/data /mnt/media cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+        # echo "//192.168.1.18/nimbus /mnt/full cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+
+        # Unmount temp folder and create symlinks
+        umount claire.temp
+        rmdir claire.temp
+        mkdir -p /config/portainer/apps
+        ln -s /config/portainer/apps/ /portainer
         echo "Mount configured successfully."
         
     else
@@ -137,16 +148,12 @@ claire.mount_data() {
     rmdir claire.temp
 
     # Create and mount /data directory
+    mkdir -p /data
     echo "#media" | tee -a /etc/fstab
-    echo "//192.168.1.18/nimbus /mnt/nimbus cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
-    mkdir /mnt/nimbus
-    mount /mnt/nimbus
+    echo "//192.168.1.18/nimbus/data /data cifs noperm,rw,credentials=/root/.storage_credentials,uid=1000,gid=1000,file_mode=0660,dir_mode=0770,vers=3.0 0 0" | tee -a /etc/fstab
+    mount /data
+
     stty echo
-    
-    # Create symlinks        
-    ln -s /mnt/nimbus/data/ /data
-    ln -s /mnt/nimbus/data/media/resources/ /resources
-    
     echo "Mount configured successfully."
 }
 
@@ -162,6 +169,55 @@ IP: $(hostname -I | awk '{print $1}')
 RAM: $(free -m | grep Mem | awk 'NR=1 {print $2}') MB
 
 EOF
+
+  # Check linux distribution
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    dist=$NAME
+    release=$VERSION_ID
+  elif type lsb_release >/dev/null 2>&1; then
+    dist=$(lsb_release -si)
+    release=$(lsb_release -sr)
+  elif [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    dist=$DISTRIB_ID
+    release=$DISTRIB_RELEASE
+  elif [ -f /etc/debian_version ]; then
+    dist=Debian
+    release=$(cat /etc/debian_version)
+  else
+    dist=$(uname -s)
+    release=$(uname -r)
+  fi
+
+  distribution="$dist $release"
+  case $distribution in
+    "Ubuntu 18.04" | "Ubuntu 20.04" | "Ubuntu 22.04" | "Ubuntu 22.10")
+      echo "$distribution has been tested and works"
+      echo
+      sleep 3
+      ;;
+    "Debian GNU/Linux 10")
+      echo "$distribution is considered experimental but will mostly work"
+      echo "You will be asked if you want to switch the debian repositories from 'stable' to 'oldstable'. More info can be found here: https://wiki.debian.org/DebianOldStable"
+      read -p "Press Enter to continue"
+      ;;
+    "Debian GNU/Linux 11")
+      echo "$distribution is considered experimental but will mostly work"
+      read -p "Press Enter to continue"
+      ;;
+    *)
+      read -p "$distribution has not been tested, would you like to continue? (y/n) " accept
+      case "$accept" in
+        [yY])
+          ;;
+        *)
+          exit 0
+          ;;
+      esac
+      ;;
+  esac
+
 }
 
 #Install claire.menu
@@ -174,7 +230,6 @@ claire.install() {
     mkdir -p /config/code
     mv /opt/ /opt.local/
     ln -s /config/code/ /opt
-    rm -rf /opt.local
 
     #Install Claire
     # Check for existing claire.menu folder and clean up if needed
@@ -187,6 +242,15 @@ claire.install() {
     # Clone claire.menu
     git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1
     find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+    
+    # mkdir claire.temp
+    # mount -t nfs 192.168.1.18:/mnt/ssd/resources/code/claire/claire claire.temp
+    # rsync -av --progress "claire.temp/claire.menu/" "/opt/claire/claire.menu/"
+    # find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
+    # umount claire.temp
+    # rmdir claire.temp
+
+    #Install Ibra ( i )
 
     # Check for existing ibramenu folder and clean up if needed
     ifolder="/opt/ibracorp/ibramenu"
@@ -231,7 +295,19 @@ source /opt/claire/claire.menu/claire.func/sauce.sh
     logo
 }
 
+install_node() {
+  gum spin --spinner dot --title "Installing Node" -- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+  gum spin --spinner dot --title "Installing Node" -- nvm install node
+}
+
 update_upgrade() {
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Basic Install Steps/All Steps in One"
+    "./All Steps in One.sh"
+  cd "/opt/claire/claire.menu/MenuOptions/Submenu Media Services/Grey Fox"
+    "./Grey Fox.sh"
   msgbox "Type 'claire.menu' to launch claire.menu"
   msgbox "Type 'claire.update' to update"
   msgbox "Please remember to reboot if the process did major Upgrades like the Kernel"
@@ -249,5 +325,7 @@ install_essential_apps
 install_qemu_guest_agent
 claire.mount_config
 claire.mount_data
+checklist
+install_node
 claire.install
 update_upgrade

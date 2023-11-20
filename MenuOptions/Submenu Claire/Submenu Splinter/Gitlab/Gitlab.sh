@@ -50,7 +50,7 @@ services:
     volumes:
       - /config/\${APP_NAME:?err}/config:/etc/gitlab
       - /config/\${APP_NAME:?err}/logs:/var/log/gitlab
-      - /config/\${APP_NAME:?err}/data:/var/opt/gitlab
+      - /resources/code:/var/opt/gitlab
     ports:
       - \${PORTE:?err}:${PORTI:?err}
       - \${PORTE2:?err}:${PORTI2:?err}  

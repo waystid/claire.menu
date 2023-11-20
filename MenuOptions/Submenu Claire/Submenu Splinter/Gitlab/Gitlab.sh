@@ -73,13 +73,12 @@ EOF
 
 # List Links
 local_appfinalization () {
-  porte="8082"
   check_ibradashy
   logo
   msgbox "All Done! Here is the link to $title:"
   echo
   ip=$(hostname -I | awk '{print $1}')
-  echo "$title: http://$ip:8082"
+  echo "$title: http://$ip:$porte"
   ibradashy
   msgbox "You can also find $title on your IBRACORP Dashy website:"
   echo "http://$ip:8086"

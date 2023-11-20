@@ -11,12 +11,12 @@ source /opt/claire/claire.menu/claire.func.sh
 source /opt/claire/claire.menu/claire.func/sauce.sh
 
 # App Info
-app="FreshRSS"                              # App Name
+app="freshrss"                              # App Name
 title="FreshRSS"                            # Readable App Title
 image="lscr.io/linuxserver/freshrss:latest" # Image and Tag
 volumes="    volumes:
       - /config/\${APP_NAME:?err}:/config" # Volumes
-tp_app="plex"                                   # Theme Park App Name
+tp_app=""                                   # Theme Park App Name
 porte="8040"                                    # External Port
 porti="80"                                      # Internal Port
 extrapayload=""                                 # Extra Payload to add to the Compose

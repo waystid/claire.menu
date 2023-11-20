@@ -37,8 +37,8 @@ EOF
   tee <<-EOF > compose.yaml
 services:
   web:
-    image: \${IMAGE:?err}
-    container_name: \${APP_NAME:?err}
+    image: $image
+    container_name: $app
     network_mode: host
     env_file:
       - /config/.id.env
@@ -48,12 +48,12 @@ services:
       GITLAB_OMNIBUS_CONFIG: |
         external_url https://git.waystid.dev
     volumes:
-      - /config/\${APP_NAME:?err}/config:/etc/gitlab
-      - /config/\${APP_NAME:?err}/logs:/var/log/gitlab
+      - /config/$app/config:/etc/gitlab
+      - /config/$app/logs:/var/log/gitlab
       - /resources/code:/var/opt/gitlab
     ports:
-      - \${PORTE:?err}:${PORTI:?err}
-      - \${PORTE2:?err}:${PORTI2:?err}  
+      - $porte:$porti
+      - $porte2:$porti2  
     restart: unless-stopped
     hostname: git.waystid.dev
     security_opt:
@@ -66,7 +66,7 @@ services:
       - web
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /config/\${APP_NAME:?err}/gitlab-runner:/etc/gitlab-runner
+      - /config/$app/gitlab-runner:/etc/gitlab-runner
 EOF
   docker compose up -d --force-recreate
 }

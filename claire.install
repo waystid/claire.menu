@@ -97,7 +97,8 @@ claire.mount_config() {
 
         msgbox "claire.mount /config"
 
-        # Create and mount config folder        
+        # Create and mount config folder 
+        echo "#config" | tee -a /etc/fstab      
         echo "192.168.1.18:/mnt/ssd/resources /mnt/resources nfs4 defaults 0 0" | tee -a /etc/fstab
         echo "192.168.1.18:/mnt/ssd/config /mnt/ssd nfs4 defaults 0 0" | tee -a /etc/fstab
         echo "192.168.1.55:/volume1/docker-pve /mnt/nervana nfs4 defaults 0 0" | tee -a /etc/fstab
@@ -208,10 +209,10 @@ claire.install() {
       source /etc/bash.bashrc
     fi
     
-    # Add claire.update as systemwide alias
-    if ! grep -q claire.update /etc/bash.bashrc
+    # Add claire.up as systemwide alias
+    if ! grep -q claire.up /etc/bash.bashrc
     then
-      insert_alias="alias claire.update='sudo /opt/claire/claire.menu/claire.update.sh'"
+      insert_alias="alias claire.up='sudo /opt/claire/claire.menu/claire.update.sh'"
       echo $insert_alias | sudo tee -a /etc/bash.bashrc > /dev/null
       source /etc/bash.bashrc
     fi

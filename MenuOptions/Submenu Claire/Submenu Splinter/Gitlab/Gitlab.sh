@@ -18,7 +18,9 @@ tp_app=""                               # Theme Park App Name
 porte="8095"                                       # External Port
 porti="80"
 porte2="8445"
-porti2="443"                                      # Internal Port
+porti2="443"
+porte3="2224"
+porti3:"22"                                      # Internal Port
 
 # App
 local_appcreate () {
@@ -46,18 +48,21 @@ services:
       - /config/.themepark.env
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url https://git.waystid.dev
+        external_url 'https://git.waystid.dev:8095'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
     volumes:
       - /config/$app/config:/etc/gitlab
       - /config/$app/logs:/var/log/gitlab
       - /resources/code:/var/opt/gitlab
     ports:
       - $porte:$porti
-      - $porte2:$porti2  
-    restart: unless-stopped
-    hostname: git.waystid.dev
+      - $porte2:$porti2
+      - $porte3:$porti3  
+    restart: always
+    hostname: 'git.waystid.dev'
     security_opt:
       - apparmor:unconfined
+    shm_size: '256m'
   gitlab-runner:
     image: gitlab/gitlab-runner:alpine
     container_name: gitlab-runner    

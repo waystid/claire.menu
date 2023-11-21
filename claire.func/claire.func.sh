@@ -98,7 +98,7 @@ environment_check() {
   fi
   # theme.park
   if [ ! -f "/config/.themepark.env" ]; then
-    echo "DOCKER_MODS=ghcr.io/gilbn/theme.park:\${TP_APP}" >"/config/.themepark.env"
+    echo "DOCKER_MODS=themes.waystid.dev:\${TP_APP}" >"/config/.themepark.env"
     echo "TP_THEME=plex" >>"/config/.themepark.env"
   fi
 }

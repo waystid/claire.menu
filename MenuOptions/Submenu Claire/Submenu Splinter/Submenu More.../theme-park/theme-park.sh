@@ -35,8 +35,8 @@ EOF
   tee <<-EOF > compose.yaml
 services:
   service-name:
-    image: \${IMAGE:?err}
-    container_name: \${APP_NAME:?err}
+    image: $image
+    container_name: $app
     network_mode: host
     env_file:
       - /config/.id.env

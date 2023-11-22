@@ -16,7 +16,7 @@ ifolder1="/opt/claire/claire.menu"
 
 #Update claire.menu
 gum spin --spinner monkey --show-output --title "Updating claire.menu" -- bash -c "rm -Rf /opt/claire/claire.menu/"
-gum spin --spinner monkey --show-output --title "Updating claire.menu" -- bash -c "git clone -b main --single-branch https://github.com/waystid/claire.menu.git /opt/claire/claire.menu2"
+gum spin --spinner monkey --show-output --title "Updating claire.menu" -- bash -c "git clone -b main --single-branch https://git.waystid.dev/waystid/claire-menu.git /opt/claire/claire.menu2"
 gum spin --spinner monkey --show-output --title "Updating claire.menu" -- rsync -av "/opt/claire/claire.menu2/" "/opt/claire/claire.menu/"
 rm -rf /opt/claire/claire.menu2
 

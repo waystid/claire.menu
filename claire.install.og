@@ -240,7 +240,7 @@ claire.install() {
     mkdir -p $ifolder1
 
     # Clone claire.menu
-    git clone -b main --single-branch https://github.com/waystid/claire.menu.git $ifolder1
+    git clone -b main --single-branch https://git.waystid.dev/waystid/claire-menu.git $ifolder1
     find $ifolder1 -type f -iname "*.sh" -exec chmod +x {} \;
     
     # mkdir claire.temp

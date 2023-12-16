@@ -61,7 +61,7 @@ local_appfinalization () {
   echo
 }
 
-# E  # Local Docker
+# Local Docker
   if [ "$app" != "registry" ]; then
     #Update image file
     update_image_file="/data/media/resources/claire/update_images"
